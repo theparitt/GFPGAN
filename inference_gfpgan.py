@@ -65,7 +65,7 @@ def main():
             bg_upsampler = None
         else:
             from basicsr.archs.rrdbnet_arch import RRDBNet
-            from realesrgan import RealESRGANer
+            from realesrgan import RealESRGANer          # ถ้ามี error ไม่เจอให้ลง pip3 install realesrgan
             model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
             bg_upsampler = RealESRGANer(
                 scale=2,
@@ -79,6 +79,7 @@ def main():
         bg_upsampler = None
 
     # ------------------------ set up GFPGAN restorer ------------------------
+    print("----- ใช้ use GFPGAN restorer ----------" + args.version  )
     if args.version == '1':
         arch = 'original'
         channel_multiplier = 1

@@ -75,6 +75,7 @@ class GFPGANer():
         elif arch == 'RestoreFormer':
             from gfpgan.archs.restoreformer_arch import RestoreFormer
             self.gfpgan = RestoreFormer()
+            
         # initialize face helper
         self.face_helper = FaceRestoreHelper(
             upscale,
@@ -86,7 +87,8 @@ class GFPGANer():
             device=self.device,
             model_rootpath='gfpgan/weights')
 
-        if model_path.startswith('https://'):
+        print("กำลังจะโหลด model_path: " + model_path )
+        if model_path.startswith('https://'):   
             model_path = load_file_from_url(
                 url=model_path, model_dir=os.path.join(ROOT_DIR, 'gfpgan/weights'), progress=True, file_name=None)
         loadnet = torch.load(model_path)
@@ -100,8 +102,8 @@ class GFPGANer():
 
     @torch.no_grad()
     def enhance(self, img, has_aligned=False, only_center_face=False, paste_back=True, weight=0.5):
-        self.face_helper.clean_all()
 
+        self.face_helper.clean_all()
         if has_aligned:  # the inputs are already aligned
             img = cv2.resize(img, (512, 512))
             self.face_helper.cropped_faces = [img]
@@ -143,6 +145,25 @@ class GFPGANer():
             self.face_helper.get_inverse_affine(None)
             # paste each restored face to the input image
             restored_img = self.face_helper.paste_faces_to_input_image(upsample_img=bg_img)
+
+            print("has_aligned a [ ", has_aligned , "]");
+            print("paste_back  a [ ", paste_back  , "]");
+            print("input  dimenstion of [0]    : " , self.face_helper.cropped_faces[0].shape)
+            print("dimenstion of [0]           : " , self.face_helper.restored_faces[0].shape)
+            print("dimenstion of restored_img : " , restored_img[0].shape)
+            print("cropped_faces               : " + str(type(self.face_helper.cropped_faces)))
+            print("restored_faces              : " + str(type(self.face_helper.restored_faces)))
+            print("restored_img                : " + str(type(restored_img)))
             return self.face_helper.cropped_faces, self.face_helper.restored_faces, restored_img
+        
         else:
+            print("has_aligned b [ ", has_aligned , "]");
+            print("paste_back  b [ ", paste_back  , "]");
+            print("input  dimenstion of [0] : " , self.face_helper.cropped_faces[0].shape)
+            print("output dimenstion of [0] : " , self.face_helper.restored_faces[0].shape)
+            print("cropped_faces            : " + str(type(self.face_helper.cropped_faces)))
+            print("restored_faces           : " + str(type(self.face_helper.restored_faces)))
+            print("restored_img             : " + str(type(None)))
             return self.face_helper.cropped_faces, self.face_helper.restored_faces, None
+
+
