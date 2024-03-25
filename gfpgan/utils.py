@@ -87,7 +87,7 @@ class GFPGANer():
             device=self.device,
             model_rootpath='gfpgan/weights')
 
-        print("กำลังจะโหลด model_path: " + model_path )
+        print("[ กำลังจะโหลด gfpgan utils.py model_path ] : " + model_path )
         if model_path.startswith('https://'):   
             model_path = load_file_from_url(
                 url=model_path, model_dir=os.path.join(ROOT_DIR, 'gfpgan/weights'), progress=True, file_name=None)
@@ -99,6 +99,7 @@ class GFPGANer():
         self.gfpgan.load_state_dict(loadnet[keyname], strict=True)
         self.gfpgan.eval()
         self.gfpgan = self.gfpgan.to(self.device)
+        print("[ โหลดเสร็จแล้ว gfpgan utils.py model_path ] : " + model_path )
 
     @torch.no_grad()
     def enhance(self, img, has_aligned=False, only_center_face=False, paste_back=True, weight=0.5):
@@ -146,11 +147,11 @@ class GFPGANer():
             # paste each restored face to the input image
             restored_img = self.face_helper.paste_faces_to_input_image(upsample_img=bg_img)
 
-            print("has_aligned a [ ", has_aligned , "]");
-            print("paste_back  a [ ", paste_back  , "]");
+            print("has_aligned [ ", has_aligned , "]");
+            print("paste_back  [ ", paste_back  , "]");
             print("input  dimenstion of [0]    : " , self.face_helper.cropped_faces[0].shape)
             print("dimenstion of [0]           : " , self.face_helper.restored_faces[0].shape)
-            print("dimenstion of restored_img : " , restored_img[0].shape)
+            print("dimenstion of restored_img  : " , restored_img[0].shape)
             print("cropped_faces               : " + str(type(self.face_helper.cropped_faces)))
             print("restored_faces              : " + str(type(self.face_helper.restored_faces)))
             print("restored_img                : " + str(type(restored_img)))
